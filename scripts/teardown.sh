@@ -5,7 +5,7 @@
 
 # Delete mongod stateful set + mongodb service + secrets + host vm configuer daemonset
 kubectl delete statefulsets mongod
-kubectl delete services mongodb-service
+kubectl delete services mongo
 kubectl delete secret shared-bootstrap-data
 kubectl delete daemonset hostvm-configurer
 sleep 3

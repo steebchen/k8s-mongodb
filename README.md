@@ -12,7 +12,7 @@ For further background information on what these scripts and resource files do, 
 Ensure the following dependencies are already fulfilled on your host Linux/Windows/Mac Workstation/Laptop:
 
 1. An account has been registered with the Google Compute Platform (GCP). You can sign up to a [free trial](https://cloud.google.com/free/) for GCP. Note: The free trial places some restrictions on account resource quotas, in particular restricting storage to a maximum of 100GB.
-2. GCP’s client command line tool [gcloud](https://cloud.google.com/sdk/docs/quickstarts) has been installed. 
+2. GCP’s client command line tool [gcloud](https://cloud.google.com/sdk/docs/quickstarts) has been installed.
 3. Your local workstation has been initialised to: (1) use your GCP account, (2) install the Kubernetes command tool (“kubectl”), (3) configure authentication credentials, and (4) set the default GCP zone to be deployed to:
 
     ```
@@ -24,7 +24,7 @@ Ensure the following dependencies are already fulfilled on your host Linux/Windo
 
 **Note:** To specify an alternative zone to deploy to, in the above command, you can first view the list of available zones by running the command: `$ gcloud compute zones list`
 
-### 1.2 Main Deployment Steps 
+### 1.2 Main Deployment Steps
 
 1. To create a Kubernetes cluster, create the required disk storage (and associated PersistentVolumes), and deploy the MongoDB Service (including the StatefulSet running "mongod" containers), via a command-line terminal/shell (ensure the script files are set to be executable):
 
@@ -47,9 +47,9 @@ You can also view the the state of the deployed environment via the [Google Clou
 
 The running replica set members will be accessible to any "app tier" containers, that are running in the same Kubernetes cluster, via the following hostnames and ports (remember to also specify the username and password, when connecting to the database):
 
-    mongod-0.mongodb-service.default.svc.cluster.local:27017
-    mongod-1.mongodb-service.default.svc.cluster.local:27017
-    mongod-2.mongodb-service.default.svc.cluster.local:27017
+    mongod-0.mongo.default.svc.cluster.local:27017
+    mongod-1.mongo.default.svc.cluster.local:27017
+    mongod-2.mongo.default.svc.cluster.local:27017
 
 ### 1.3 Example Tests To Run To Check Things Are Working
 
@@ -69,7 +69,7 @@ Connect to the container running the first "mongod" replica, then use the Mongo 
     > db.testcoll.insert({a:1});
     > db.testcoll.insert({b:2});
     > db.testcoll.find();
-    
+
 Exit out of the shell and exit out of the first container (“mongod-0”). Then connect to the second container (“mongod-1”), run the Mongo Shell again and see if the previously inserted data is visible to the second "mongod" replica:
 
     $ kubectl exec -it mongod-1 -c mongod-container bash
@@ -78,7 +78,7 @@ Exit out of the shell and exit out of the first container (“mongod-0”). Then
     > use test;
     > db.setSlaveOk(1);
     > db.testcoll.find();
-    
+
 You should see that the two records inserted via the first replica, are visible to the second replica.
 
 #### 1.3.2 Redeployment Without Data Loss Test
@@ -88,7 +88,7 @@ To see if Persistent Volume Claims really are working, run a script to drop the 
     $ ./delete_service.sh
     $ ./recreate_service.sh
     $ kubectl get all
-    
+
 Keep re-running the final command above, until you can see that all 3 “mongod” pods and their containers have been successfully started again. Then connect to the first container, run the Mongo Shell and query to see if the data we’d inserted into the old containerised replica-set is still present in the re-instantiated replica set:
 
     $ kubectl exec -it mongod-0 -c mongod-container bash
@@ -96,7 +96,7 @@ Keep re-running the final command above, until you can see that all 3 “mongod�
     > db.getSiblingDB('admin').auth("main_admin", "abc123");
     > use test;
     > db.testcoll.find();
-    
+
 You should see that the two records inserted earlier, are still present.
 
 ### 1.4 Undeploying & Cleaning Down the Kubernetes Environment
@@ -106,7 +106,7 @@ You should see that the two records inserted earlier, are still present.
 Run the following script to undeploy the MongoDB Service & StatefulSet plus related Kubernetes resources, followed by the removal of the GCE disks before finally deleting the GKE Kubernetes cluster.
 
     $ ./teardown.sh
-    
+
 It is also worth checking in the [Google Cloud Platform Console](https://console.cloud.google.com), to ensure all resources have been removed correctly.
 
 

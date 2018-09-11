@@ -7,11 +7,11 @@
 kubectl get persistentvolumes
 
 # Deploy just the mongodb service with mongod stateful-set only
-kubectl apply -f ../resources/mongodb-service.yaml
+kubectl apply -f ../resources/mongo.yaml
 sleep 5
 
 # Print current deployment state (unlikely to be finished yet)
-kubectl get all 
+kubectl get all
 kubectl get persistentvolumes
 echo
 echo "Keep running the following command until all 'mongod-n' pods are shown as running:  kubectl get all"
